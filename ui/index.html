@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce App</title>
+</head>
+<body>
+  <h1>E-commerce App</h1>
+
+  <!-- User Registration Form -->
+  <h2>Register User</h2>
+  <form id="registerForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Register</button>
+  </form>
+  <p id="registerMessage"></p>
+
+  <!-- Order Form -->
+  <h2>Place Order</h2>
+  <form id="orderForm">
+    <input type="text" id="orderProduct" placeholder="Product" required>
+    <input type="number" id="orderQuantity" placeholder="Quantity" min="1" required>
+    <input type="text" id="orderUsername" placeholder="Username" required>
+    <button type="submit">Place Order</button>
+  </form>
+  <p id="orderMessage"></p>
+
+  <script>
+    // API Gateway base URL
+    const apiBaseUrl = "http://localhost:8082";
+
+    // Register User
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await response.text();
+        document.getElementById("registerMessage").textContent = data;
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("registerMessage").textContent = "Registration failed.";
+      }
+    });
+
+    // Place Order
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const product = document.getElementById("orderProduct").value;
+      const quantity = document.getElementById("orderQuantity").value;
+      const username = document.getElementById("orderUsername").value;
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ product, quantity, username }),
+        });
+        const data = await response.text();
+        document.getElementById("orderMessage").textContent = data;
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("orderMessage").textContent = "Order placement failed.";
+      }
+    });
+  </script>
+</body>
+</html>
